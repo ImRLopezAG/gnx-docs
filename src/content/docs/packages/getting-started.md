@@ -27,4 +27,6 @@ The services package contains the base classes and interfaces that are used to c
 
 The decorators package contains the base classes and interfaces that are used to create decorators. It also contains the `@gnx-utilities/decorators` package, which is used to create decorators for `repositories` and `services`.
 
+### Validators
 
+The validators package contains the base classes and interfaces that are used to create validators. It also contains the `@gnx-utilities/validators` package, which is used to create validators for every property or value it doesn't mater if it is a `repository` or `service` or your own custom implementation.
