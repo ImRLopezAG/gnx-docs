@@ -1,6 +1,6 @@
 ---
 title: Decorators
-description: A guide in my new Starlight docs site.
+description: GNX is a collect of utilities that are used across all of our projects. It is a collection of utilities that we have found useful in our projects and we hope you will find them useful in yours. We have tried to make them as generic as possible so that they can be used in any project.
 ---
 
 # 📝 Generics Decorators
@@ -43,44 +43,44 @@ but you will not have the typing of the repository methods such as `create`, `up
 ### 🔷 Sequelize
 
 ```typescript
-import { SequelizeBaseEntity } from '@gnx-utilities/models';
-import { DataTypes, Sequelize } from 'sequelize';
-import { sequelizeRepository, getRepository } from '@gnx-utilities/decorators';
+import { SequelizeBaseEntity } from '@gnx-utilities/models'
+import { DataTypes, Sequelize } from 'sequelize'
+import { sequelizeRepository, getRepository } from '@gnx-utilities/decorators'
 
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: ':memory:',
-});
+  storage: ':memory:'
+})
 
 export class SequelizeUser extends SequelizeBaseEntity {
-  declare firstName: string;
-  declare lastName: string;
+  declare firstName: string
+  declare lastName: string
 }
 
 SequelizeUser.init(
   {
     firstName: { type: DataTypes.STRING },
-    lastName: { type: DataTypes.STRING },
+    lastName: { type: DataTypes.STRING }
   },
   { sequelize, modelName: 'person' }
-);
+)
 
 @sequelizeRepository({ model: SequelizeUser })
 export class SequelizeUserService {
   greeting(): string {
-    return 'Hello, world!';
+    return 'Hello, world!'
   }
 }
 
 const userService = getRepository<SequelizeUser, SequelizeUserService>({
-  repository: SequelizeUserService,
-});
+  repository: SequelizeUserService
+})
 
 const user = await userService.create({
-  entity: { firstName: 'John', lastName: 'Doe' },
-});
+  entity: { firstName: 'John', lastName: 'Doe' }
+})
 
-console.log(user.firstName); // John
+console.log(user.firstName) // John
 ```
 
 ### 🍃 Typegoose
@@ -93,34 +93,34 @@ On `prop` decorator, you need to add the `type` property to the decorator, this 
 :::
 
 ```ts
-import { getModelForClass, prop } from '@typegoose/typegoose';
-import { TypegooseBaseEntity } from '@gnx-utilities/models';
-import { typegooseRepository } from '../../src/decorators/typegoose.decorator.js';
+import { getModelForClass, prop } from '@typegoose/typegoose'
+import { TypegooseBaseEntity } from '@gnx-utilities/models'
+import { typegooseRepository } from '../../src/decorators/typegoose.decorator.js'
 
 export class TypegooseUser extends TypegooseBaseEntity {
   @prop({ type: String })
-  declare firstName: string;
+  declare firstName: string
 
   @prop({ type: String })
-  declare lastName: string;
+  declare lastName: string
 }
 
-export const UserModel = getModelForClass(TypegooseUser);
+export const UserModel = getModelForClass(TypegooseUser)
 
 @typegooseRepository({ model: UserModel })
 export class TypegooseUserService {
   greeting(): string {
-    return 'Hello, world!';
+    return 'Hello, world!'
   }
 }
 
 const userService = getRepository<TypegooseUser, TypegooseUserService>({
-  repository: TypegooseUserService,
-});
+  repository: TypegooseUserService
+})
 
 const user = await userService.create({
-  entity: { firstName: 'John', lastName: 'Doe' },
-});
+  entity: { firstName: 'John', lastName: 'Doe' }
+})
 
-console.log(user.firstName); // John
+console.log(user.firstName) // John
 ```

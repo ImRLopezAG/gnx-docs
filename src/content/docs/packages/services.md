@@ -1,6 +1,6 @@
 ---
 title: Services
-description: A guide in my new Starlight docs site.
+description: GNX is a collect of utilities that are used across all of our projects. It is a collection of utilities that we have found useful in our projects and we hope you will find them useful in yours. We have tried to make them as generic as possible so that they can be used in any project.
 ---
 
 # 📝 Generics Services
@@ -36,41 +36,41 @@ bun add @gnx-utilities/core @gnx-utilities/models
 ### 🔷 Sequelize
 
 ```typescript
-import { SequelizeBaseEntity } from '@gnx-utilities/models';
-import { DataTypes, Sequelize } from 'sequelize';
-import { SequelizeService } from '@gnx-utilities/core';
+import { SequelizeBaseEntity } from '@gnx-utilities/models'
+import { DataTypes, Sequelize } from 'sequelize'
+import { SequelizeService } from '@gnx-utilities/core'
 
 export const sequelize = new Sequelize('test', 'postgres', 'root', {
   host: 'localhost',
-  dialect: 'postgres',
-});
+  dialect: 'postgres'
+})
 
 export class User extends SequelizeBaseEntity {
-  declare firstName: string;
-  declare lastName: string;
+  declare firstName: string
+  declare lastName: string
 }
 
 User.init(
   {
     firstName: { type: DataTypes.STRING },
-    lastName: { type: DataTypes.STRING },
+    lastName: { type: DataTypes.STRING }
   },
   { sequelize, modelName: 'person' }
-);
+)
 
 export class UserService extends SequelizeService<User> {
   constructor() {
-    super(User);
+    super(User)
   }
 }
 
-const userService = new UserService();
+const userService = new UserService()
 
 const user = await userService.create({
-  entity: { firstName: 'John', lastName: 'Doe' },
-});
+  entity: { firstName: 'John', lastName: 'Doe' }
+})
 
-console.log(user.firstName); // John
+console.log(user.firstName) // John
 ```
 
 ### 🍃 Typegoose
@@ -83,33 +83,33 @@ On `prop` decorator, you need to add the `type` property to the decorator, this 
 :::
 
 ```typescript
-import { TypegooseService } from '@gnx-utilities/core';
-import { getModelForClass, prop } from '@typegoose/typegoose';
-import { TypegooseBaseEntity } from '@gnx-utilities/models';
+import { TypegooseService } from '@gnx-utilities/core'
+import { getModelForClass, prop } from '@typegoose/typegoose'
+import { TypegooseBaseEntity } from '@gnx-utilities/models'
 
 export class User extends TypegooseBaseEntity {
   @prop({ type: String })
-  declare firstName: string;
+  declare firstName: string
 
   @prop({ type: String })
-  declare lastName: string;
+  declare lastName: string
 }
 
-export const UserModel = getModelForClass(User);
+export const UserModel = getModelForClass(User)
 
 export class UserService extends TypegooseService<User> {
   constructor() {
-    super(UserModel);
+    super(UserModel)
   }
 }
 
-const userService = new UserService();
+const userService = new UserService()
 
 const user = await userService.create({
-  entity: { firstName: 'John', lastName: 'Doe' },
-});
+  entity: { firstName: 'John', lastName: 'Doe' }
+})
 
-console.log(user.firstName); // John
+console.log(user.firstName) // John
 ```
 
 ## ✏️ Override methods - Sequelize
@@ -123,30 +123,30 @@ When you override a method, you need to call the super method or return the valu
 :::
 
 ```ts
-import { SequelizeService } from '@gnx-utilities/core';
+import { SequelizeService } from '@gnx-utilities/core'
 import {
   ServiceParams,
   ServiceParamsWithEntity,
-  ServiceParamsWithId,
-} from '@gnx-utilities/models';
+  ServiceParamsWithId
+} from '@gnx-utilities/models'
 
 export class UserService extends SequelizeService {
   constructor() {
-    super(User);
+    super(User)
   }
   override async create({ entity }: ServiceParamsWithEntity) {
     // your code here
-    return super.create({ entity });
+    return super.create({ entity })
   }
 
   override async update({ id, entity }: ServiceParams) {
     // your code here
-    return super.update({ id, entity });
+    return super.update({ id, entity })
   }
 
   override async delete({ id }: ServiceParamsWithId) {
     // your code here
-    return super.delete({ id });
+    return super.delete({ id })
   }
 }
 ```
@@ -154,30 +154,30 @@ export class UserService extends SequelizeService {
 ## ✏️ Override methods - Typegoose
 
 ```ts
-import { TypegooseService } from '@gnx-utilities/core';
+import { TypegooseService } from '@gnx-utilities/core'
 import {
   ServiceParams,
   ServiceParamsWithEntity,
-  ServiceParamsWithId,
-} from '@gnx-utilities/models';
+  ServiceParamsWithId
+} from '@gnx-utilities/models'
 
 export class UserService extends TypegooseService {
   constructor() {
-    super(UserModel);
+    super(UserModel)
   }
   override async create({ entity }: ServiceParamsWithEntity<User>) {
     // your code here
-    return super.create({ entity });
+    return super.create({ entity })
   }
 
   override async update({ id, entity }: ServiceParams) {
     // your code here
-    return super.update({ id, entity });
+    return super.update({ id, entity })
   }
 
   override async delete({ id }: ServiceParamsWithId) {
     // your code here
-    return super.delete({ id });
+    return super.delete({ id })
   }
 }
 ```

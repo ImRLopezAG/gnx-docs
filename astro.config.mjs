@@ -21,6 +21,14 @@ export default defineConfig({
         {
           label: 'Packages',
           items: [
+            {
+              label: 'CLI',
+              link: '/global/soon',
+              badge: {
+                text: 'Coming soon',
+                variant: 'tip'
+              }
+            },
             { label: 'Models', link: '/packages/models' },
             { label: 'Services', link: '/packages/services' },
             {
@@ -33,10 +41,10 @@ export default defineConfig({
             },
             {
               label: 'Validators',
-              link: '/global/soon',
+              link: '/packages/validators',
               badge: {
-                text: 'Coming Soon',
-                variant: 'tip'
+                text: 'new',
+                variant: 'success'
               }
             }
           ]
@@ -44,6 +52,14 @@ export default defineConfig({
         {
           label: 'API',
           items: [
+            {
+              label: 'CLI',
+              link: '/global/soon',
+              badge: {
+                text: 'Coming soon',
+                variant: 'tip'
+              }
+            },
             {
               label: 'Models',
               link: '/api/models'
@@ -62,10 +78,10 @@ export default defineConfig({
             },
             {
               label: 'Validators',
-              link: '/global/soon',
+              link: '/api/validators',
               badge: {
-                text: 'Coming Soon',
-                variant: 'tip'
+                text: 'new',
+                variant: 'success'
               }
             }
           ]

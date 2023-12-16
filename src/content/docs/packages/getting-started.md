@@ -1,6 +1,6 @@
 ---
 title: GNX - Utilities
-description: A guide in my new Starlight docs site.
+description: GNX is a collect of utilities that are used across all of our projects. It is a collection of utilities that we have found useful in our projects and we hope you will find them useful in yours. We have tried to make them as generic as possible so that they can be used in any project.
 ---
 
 GNX is a collection of packages that can be used together or separately. The core package isn't required to use the other packages, but each package has a peer dependency on some of the other packages. For example, the `@gnx-utilities/services` package has a peer dependency on the `@gnx-utilities/models` package. This means that you can install the `@gnx-utilities/services` package without installing the `@gnx-utilities/models` package, but you will get an error if you try to use the `@gnx-utilities/services` package without installing the `@gnx-utilities/models` package.
@@ -21,7 +21,7 @@ The models package contains the base classes and interfaces that are used to cre
 
 ### Services
 
-The services package contains the base classes and interfaces that are used to create services. 
+The services package contains the base classes and interfaces that are used to create services.
 
 ### Decorators
 
