@@ -2,6 +2,7 @@
 title: Validators
 description: GNX is a collect of utilities that are used across all of our projects. It is a collection of utilities that we have found useful in our projects and we hope you will find them useful in yours. We have tried to make them as generic as possible so that they can be used in any project.
 ---
+import { Tabs, TabItem } from '@astrojs/starlight/components'
 
 # 📝 Fluent Validations
 
@@ -9,25 +10,36 @@ Fluent Validations is a library that allows you to create validations for your e
 
 ## 📦 Installation
 
-```bash
+<Tabs>
+<TabItem label="npm">
+```sh
 npm install @gnx-utilities/validators
 ```
+</TabItem>
 
-```bash
-pnpm add @gnx-utilities/validators
+<TabItem label='pnpm'>
+```sh 
+pnpm add @gnx-utilities/validators 
 ```
+</TabItem>
 
-```bash
-yarn add @gnx-utilities/validators
+<TabItem label='yarn'>
+```sh 
+yarn add @gnx-utilities/validators 
 ```
+</TabItem>
 
-```bash
+<TabItem label="bun">
+```sh
 bun add @gnx-utilities/validators
 ```
+</TabItem>
+</Tabs>
 
 ## 📖 Usage
 
-### Properties validation
+<Tabs>
+<TabItem label="Fluent Validation">
 
 ```ts
 import { FluentValidation } from '@gnx-utilities/validators'
@@ -55,8 +67,9 @@ console.log(wrongValidation.softValidation()) // { isValid: false, errors: [ 'Th
 
 console.log(wrongValidation.getErrors()) // [ 'The value is not a valid email' ]
 ```
+</TabItem>
 
-### Model validation
+<TabItem label="Model Validation">
 
 ```ts
 import { ModelValidator } from '@gnx-utilities/validators'
@@ -66,6 +79,7 @@ const user = {
   email: 'test@test.test',
   age: 20
 }
+
 const validation = ModelValidator.create()
   .for({ model: user })
   .withProperty(({ name }) => name === 'John')
@@ -90,3 +104,5 @@ console.log(wrongValidation.softValidation()) // { isValid: false, errors: [ 'Th
 
 console.log(wrongValidation.getErrors()) // [ 'The property name is not valid', 'The property email is not valid', 'The property age is not valid' ]
 ```
+</TabItem>
+</Tabs>

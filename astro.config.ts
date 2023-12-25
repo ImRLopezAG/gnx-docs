@@ -12,7 +12,6 @@ export default defineConfig({
         twitter: 'https://twitter.com/ImR_Lopez'
       },
       favicon: '/public/favicon.svg',
-      
       sidebar: [
         {
           label: 'Getting Started',
@@ -33,15 +32,15 @@ export default defineConfig({
             { label: 'Services', link: '/packages/services' },
             {
               label: 'Decorators',
-              link: '/packages/decorators',
-              badge: {
-                text: 'new',
-                variant: 'success'
-              }
+              link: '/packages/decorators'
             },
             {
               label: 'Validators',
-              link: '/packages/validators',
+              link: '/packages/validators'
+            },
+            {
+              label: 'Controllers',
+              link: '/packages/controllers',
               badge: {
                 text: 'new',
                 variant: 'success'
@@ -70,15 +69,15 @@ export default defineConfig({
             },
             {
               label: 'Decorators',
-              link: '/api/decorators',
-              badge: {
-                text: 'new',
-                variant: 'success'
-              }
+              link: '/api/decorators'
             },
             {
               label: 'Validators',
-              link: '/api/validators',
+              link: '/api/validators'
+            },
+            {
+              label: 'Controllers',
+              link: '/api/controllers',
               badge: {
                 text: 'new',
                 variant: 'success'

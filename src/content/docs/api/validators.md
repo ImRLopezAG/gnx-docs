@@ -14,7 +14,7 @@ Fluent Validations is a library that allows you to create validations for your e
 FluentValidation is a class that allows you to create validations for your properties.
 
 ```ts
-export type FluentValidations = ValidationsOptions & {
+type FluentValidations = ValidationsOptions & {
   getValidations: () => Map<Validations, boolean>
   getErrors: () => string[]
   softValidation: () => SoftValidation
@@ -28,7 +28,7 @@ export type FluentValidations = ValidationsOptions & {
 SoftValidation is a object that contains the result of the validation.
 
 ```ts
-export interface SoftValidation {
+interface SoftValidation {
   isValid: boolean
   errors: string[]
   totalErrors: number
@@ -40,9 +40,19 @@ export interface SoftValidation {
 ValidationsOptions is a object that contains the options for the validations.
 
 ```ts
-export type ValidationsOptions = BasicsValidation &
+type ValidationsOptions = BasicsValidation &
   NumbersValidation &
   StringsValidation
+```
+
+### `KeyOf`
+
+KeyOf is a string that contains the name of the property.
+
+```ts
+type KeyOf<T> = {
+  [K in keyof T]: T[K] extends any ? K : never
+}[keyof T]
 ```
 
 ### `Validations`
@@ -50,51 +60,7 @@ export type ValidationsOptions = BasicsValidation &
 Validations is a string that contains the name of the validations.
 
 ```ts
-export type Validations =
-  | 'isString'
-  | 'isBoolean'
-  | 'isArray'
-  | 'isObject'
-  | 'isFunction'
-  | 'isUndefined'
-  | 'isNumber'
-  | 'isEqualTo'
-  | 'isGreaterThan'
-  | 'isGreaterThanOrEqualTo'
-  | 'isLessThan'
-  | 'isLessThanOrEqualTo'
-  | 'isBetween'
-  | 'isMaxLength'
-  | 'isMinLength'
-  | 'isLengthBetween'
-  | 'isLengthEqual'
-  | 'isLengthGreaterThan'
-  | 'isLengthGreaterThanOrEqualTo'
-  | 'isLengthLessThan'
-  | 'isLengthLessThanOrEqualTo'
-  | 'isDivisibleBy'
-  | 'isPositive'
-  | 'isNegative'
-  | 'isEmail'
-  | 'isURL'
-  | 'isGmail'
-  | 'isOutlook'
-  | 'isDate'
-  | 'isDateAfter'
-  | 'isDateBefore'
-  | 'isDateBetween'
-  | 'isGuid'
-  | 'isHexColor'
-  | 'isHexadecimal'
-  | 'isIP'
-  | 'isIPv4'
-  | 'isIPv6'
-  | 'isJSON'
-  | 'isLowercase'
-  | 'isUppercase'
-  | 'isUUID'
-  | 'isCreditCard'
-  | 'isRequired'
+type Validations = KeyOf<ValidationsOptions>
 ```
 
 ### `Between`
@@ -102,7 +68,7 @@ export type Validations =
 Between is a object that contains the min and max values for the validations.
 
 ```ts
-export interface Between {
+interface Between {
   min: any
   max: any
 }
@@ -113,7 +79,7 @@ export interface Between {
 FluentValidationsOptions is a object that contains the value for the validations.
 
 ```ts
-export interface FluentValidationsOptions<T = any> {
+interface FluentValidationsOptions<T = any> {
   value: string | number | T
 }
 ```
@@ -206,7 +172,7 @@ interface StringsValidation {
 ModelValidator is a class that allows you to create validations for your entities.
 
 ```ts
-export interface ModelValidations<T = any> {
+interface ModelValidations<T = any> {
   withProperty: (
     callback: (obj: T, { identifier }?: Identifier) => boolean
   ) => ModelValidations<T>
@@ -223,7 +189,7 @@ export interface ModelValidations<T = any> {
 ModelValidatorOptions is a object that contains the options for the validations.
 
 ```ts
-export interface ModelValidatorOptions<T = any> {
+interface ModelValidatorOptions<T = any> {
   identifier: string
   model: Record<string, any> | T
 }
@@ -234,17 +200,19 @@ export interface ModelValidatorOptions<T = any> {
 Start and Identifier are subtypes of ModelValidatorOptions.
 
 ```ts
-export type Start<T> = Omit<ModelValidatorOptions<T>, 'identifier'>
+type Start<T> = Omit<ModelValidatorOptions<T>, 'identifier'>
 
-export type Identifier<T = any> = Omit<ModelValidatorOptions<T>, 'model'>
+type Identifier<T = any> = Omit<ModelValidatorOptions<T>, 'model'>
 ```
 
-## 🧪 GNXFluentValidatorErrors
+## ⚠️ Exceptions
+
+### 🧪 GNXFluentValidatorErrors
 
 GNXFluentValidatorErrors is a object that contains the errors for the validations to create the constructor custom error.
 
 ```ts
-export interface GNXFluentValidatorErrorsConstructor {
+interface GNXFluentValidatorErrorsConstructor {
   message: string
   errors: string[]
   count: number

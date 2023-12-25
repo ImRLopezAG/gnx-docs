@@ -2,89 +2,113 @@
 title: Decorators
 description: Get started building fastest services with GNX
 ---
+import { Tabs, TabItem } from '@astrojs/starlight/components'
+
 The decorators API contain the Generics repository of our `ODM`/`ORM` based on our models API `gnx-utilities/models` it has many methods which will help you to implement your applications quickly as our packages `gnx-utilities/service`, `gnx-utilities/decorators` is an abstraction of the `gnx-utilities/service` package.
 
 ## ✏️ Methods
 
-| Method | Params | Return |
-| --- | --- | --- |
-| model | - | `EntityModel` |
-| getAll | - | Promise<T[]> |
-| getAllPaginated | { page, limit } | Promise<Pagination<T>> |
-| getAllDeleted | - | Promise<T[]> |
-| getAllWithDeleted | - | Promise<T[]> |
-| getById | { id } | Promise<T> |
-| create | { entity } | Promise<T> |
-| update | { entity, id } | Promise<T> |
-| hardDelete | { id } | Promise<void> |
-| softDelete | { id } | Promise<boolean> |
-| restore | { id } | Promise<boolean> |
-| getSchema | - | Schema[] |
-
+| Method            | Params            | Return                   |
+| ----------------- | ----------------- | ------------------------ |
+| model             | -                 | `Model`                  |
+| getAll            | -                 | `Promise<T[]>`           |
+| getAllPaginated   | `{ page, limit }` | `Promise<Pagination<T>>` |
+| getAllDeleted     | -                 | `Promise<T[]>`           |
+| getAllWithDeleted | -                 | `Promise<T[]>`           |
+| getById           | `{ id }`          | `Promise<T>`             |
+| create            | `{ entity }`      | `Promise<T>`             |
+| bulkCreate        | `{ entities }`    | `Promise<T[]>`           |
+| update            | `{ entity, id }`  | `Promise<T>`             |
+| hardDelete        | `{ id }`          | `Promise<void>`          |
+| softDelete        | `{ id }`          | `Promise<boolean>`       |
+| restore           | `{ id }`          | `Promise<boolean>`       |
+| bulkDelete        | -                 | `Promise<void>`          |
+| getSchema         | `{ exclude }`     | Schema[]                 |
 
 ## 📝 Declaration
-### 🔷 Sequelize
+
 This is an example of how to declare a service with the `SequelizeService` class and the `SequelizeBaseEntity` class from `gnx-utilities/models` library.
 
+<Tabs>
+<TabItem label="Sequelize">
 ```ts
 import { SequelizeBaseEntity } from '@gnx-utilities/models'
 import { DataTypes, Sequelize } from 'sequelize'
 import { sequelizeRepository, getRepository } from '@gnx-utilities/decorators'
+import type { UUID } from 'node:crypto'
 
-export const sequelize = new Sequelize({
+const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: ':memory:'
+  storage: './db/test.sqlite'
 })
 
-export class User extends SequelizeBaseEntity {
+class User extends SequelizeBaseEntity {
+  declare id: UUID
   declare firstName: string
   declare lastName: string
+  declare email: string
 }
 
 User.init(
   {
+    id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
     firstName: { type: DataTypes.STRING },
-    lastName: { type: DataTypes.STRING }
+    lastName: { type: DataTypes.STRING },
+    email: { type: DataTypes.STRING },
+    isDeleted: { type: DataTypes.BOOLEAN, defaultValue: false }
   },
   { sequelize, modelName: 'person' }
 )
 
-@sequelizeRepository({ model: User })
-export class UserService {
-  greeting (): string {
+
+@sequelizeRepository({ model: SequelizeUser })
+class UserService {
+  greeting(): string {
     return 'Hello, world!'
   }
 }
 
-const userService = getRepository<User, UserService>({repository: UserService})
-```
+const userService = getRepository<User>({ repository: UserService })
 
-### 🍃 Typegoose
+````
+</TabItem>
 
-This is an example of how to declare a service with the `TypegooseService` class and the `TypegooseBaseEntity` class from `gnx-utilities/models` library.
-
+<TabItem label='Typegoose'>
 ```ts
 import { TypegooseBaseEntity } from '@gnx-utilities/models'
-import { prop } from '@typegoose/typegoose'
+import { getModelForClass, prop } from '@typegoose/typegoose'
 import { typegooseRepository, getRepository } from '@gnx-utilities/decorators'
 
-export class User extends TypegooseBaseEntity {
-  @prop({ required: true, type: String })
-  declare firstName: string
 
-  @prop({ required: true, type: String })
-  declare lastName: string
+const uri = 'mongodb://localhost:27017/?readPreference=primary&ssl=false&directConnection=true'
+
+const connection = async (): Promise<void> => {
+  await connect(uri, { dbName: 'test' })
 }
 
-@typegooseRepository({ model: User })
-export class UserService {
-  greeting (): string {
+class User extends TypegooseBaseEntity {
+  @prop({ type: String })
+  declare firstName: string
+
+  @prop({ type: String })
+  declare lastName: string
+
+  @prop({ type: String })
+  declare email: string
+}
+
+@typegooseRepository({ model: UserModel })
+class UserService {
+  greeting(): string {
     return 'Hello, world!'
   }
 }
 
-const userService = getRepository<User, UserService>({repository: UserService})
-```
+const userService = getRepository<User>({ repository: UserService })
+````
+
+</TabItem>
+</Tabs>
 
 ### getAll
 
@@ -152,6 +176,19 @@ const user = await userService.create({
 console.log(user.firstName); // John
 ```
 
+### bulkCreate
+
+Create many documents
+
+```ts
+const entity = { firstName: 'John', lastName: 'Doe' }
+const created = await userService.bulkCreate({
+  entities: Array(10).fill(entity),
+});
+
+console.log(created); // [ { firstName: 'John', lastName: 'Doe' } ]
+```
+
 ### update
 
 Update a document
@@ -203,14 +240,28 @@ on the database the document will be updated with the isDeleted field
 | --- | --- | --- | --- | --- | --- |
 | 1 | John | Doe | 2021-01-01 00:00:00 | 2021-01-01 00:00:00 | 0 or false |
 
+### bulkDelete
+
+Delete all documents from a collection
+
+```ts
+
+await userService.bulkDelete();
+```
+| id | firstName | lastName | createdAt | updatedAt | isDeleted |
+| --- | --- | --- | --- | --- | --- |
+
 ### getSchema
 
-Get the schema of the model
+Get the properties that are mandatory for the model
 
 ```ts
 
 const schema = userService.getSchema();
 
 console.log(schema); // [ { name: 'firstName', type: 'string' }, { name: 'lastName', type: 'string' } ]
-```
 
+const schema = userService.getSchema({ exclude: ['firstName'] });
+
+console.log(schema); // [ { name: 'lastName', type: 'string' } ]
+```

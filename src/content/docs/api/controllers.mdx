@@ -1,0 +1,107 @@
+---
+title: Controllers
+description: Get started building fastest services with GNX
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components'
+
+The controllers package API contains all the types and methods that are used to create controllers for `repositories` and `services`.
+
+## 🧪 External Types
+
+<Tabs>
+<TabItem label="@gnx-utilities/models">
+```ts
+type Pagination<T> 
+type SequelizeBaseEntity
+type TypegooseBaseEntity
+```
+</TabItem>
+
+<TabItem label="express">
+```ts
+type NextFunction
+type Request
+type Response
+```
+</TabItem>
+</Tabs>
+
+## ✏️ Methods
+
+| Method            | Params            | Return                   |
+| ----------------- | ----------------- | ------------------------ |
+| `getAll`          | `req, res, next`  | `Promise<Response<T[]>>` |
+| `getAllPaginated` | `req, res, next`  | `Promise<Response<Pagination<T>>>` |
+| `getAllDeleted`   | `req, res, next`  | `Promise<Response<T[]>>` |
+| `getAllWithDeleted` | `req, res, next`  | `Promise<Response<T[]>>` |
+| `getById`         | `req, res, next`  | `Promise<Response<T>>`   |
+| `create`          | `req, res, next`  | `Promise<Response<T>>`   |
+| `update`          | `req, res, next`  | `Promise<Response<T>>`   |
+| `softDelete`      | `req, res, next`  | `Promise<Response<boolean>>` |
+| `restore`         | `req, res, next`  | `Promise<Response<boolean>>` |
+| `hardDelete`      | `req, res, next`  | `Promise<Response<boolean>>` |
+| `bulkCreate`      | `req, res, next`  | `Promise<Response<T[]>>` |
+| `bulkDelete`      | `req, res, next`  | `Promise<Response<boolean>>` |
+
+## 📦 Usage
+
+```ts
+import { SequelizeBaseEntity } from '@gnx-utilities/models'
+import { SequelizeService } from '@gnx-utilities/services'
+import { DataTypes, Sequelize } from 'sequelize'
+import { GenericControllerService } from '@gnx-utilities/controllers'
+import { Router } from 'express'
+import type { UUID } from 'node:crypto'
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: './db/test.sqlite'
+})
+
+class User extends SequelizeBaseEntity {
+  declare id: UUID
+  declare firstName: string
+  declare lastName: string
+  declare email: string
+}
+
+User.init(
+  {
+    id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
+    firstName: { type: DataTypes.STRING },
+    lastName: { type: DataTypes.STRING },
+    email: { type: DataTypes.STRING },
+    isDeleted: { type: DataTypes.BOOLEAN, defaultValue: false }
+  },
+  { sequelize, modelName: 'person' }
+)
+
+
+class UserService extends SequelizeService<User> {
+  constructor () {
+    super(User)
+  }
+}
+
+class UserController extends GenericControllerService<User, UserService> {
+  constructor () {
+    super(new UserService())
+  }
+}
+const controller = new UserController()
+const router: Router = Router()
+
+router.get('/list', controller.getAll)
+router.get('/get/:id', controller.getById)
+router.get('/paginate', controller.getAllPaginated)
+router.get('/all', controller.getAllWithDeleted)
+router.get('/deleted', controller.getAllDeleted)
+router.post('/create', controller.create)
+router.post('/createMany', controller.bulkCreate)
+router.patch('/update/:id', controller.update)
+router.delete('/hide/:id', controller.softDelete)
+router.patch('/restore/:id', controller.restore)
+router.delete('/delete/:id', controller.hardDelete)
+router.delete('/deleteAll', controller.bulkDelete)
+
+export { router, sequelize }
+```

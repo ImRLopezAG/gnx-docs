@@ -103,6 +103,15 @@ interface PaginationType {
 }
 ```
 
+### `ExcludeFields`
+
+The `ExcludeFields` interface is the base interface for all excluded fields.
+
+```ts
+interface ExcludeFields {
+  exclude: string[]
+}
+```
 ### `GenericService`
 
 The `GenericService` interface is the base interface for all services. It contains the basic CRUD operations and the `getSchema` method.
@@ -115,11 +124,13 @@ interface GenericService<T extends Entity> {
   getAllWithDeleted: () => Promise<T[]>
   getById: ({ id }: ServiceParamsWithId) => Promise<T | null>
   create: ({ entity }: ServiceParamsWithEntity) => Promise<T>
+  bulkCreate: ({ entities }: { entities: ServiceParamsWithEntity[] }) => Promise<T[]>
   update: ({ entity, id }: ServiceParams) => Promise<T>
   softDelete: ({ id }: ServiceParamsWithId) => Promise<boolean>
   restore: ({ id }: ServiceParamsWithId) => Promise<boolean>
   hardDelete: ({ id }: ServiceParamsWithId) => Promise<boolean>
-  getSchema: () => Schema[]
+  bulkDelete: () => Promise<boolean>
+  getSchema: ({ exclude }: ExcludeFields) => Schema[]
 }
 ```
 ### `ServiceParams`
